@@ -37,13 +37,14 @@ def test_auto_routes_code_tier():
     assert d.candidates[0] == "openrouter/anthropic/claude-3.5-sonnet"
 
 
-def test_cooling_provider_moves_to_end_not_dropped():
+def test_cooling_provider_still_tried_last_not_dropped():
     r = make_router(cooling_down={"openrouter"})
     d = r.resolve("fix this bug in the function")
-    # still present (desperate fallback) but the health-aware order flags it
+    # cooling-down candidates are flagged but kept as desperate fallbacks
     assert d.candidates == ["openrouter/anthropic/claude-3.5-sonnet",
                             "openrouter/openai/gpt-4o-mini"]
-    assert d.skipped == []
+    assert len(d.skipped) == 2
+    assert all(reason == "cooldown" for _, reason in d.skipped)
 
 
 def test_unknown_tier_yields_empty_candidates():
