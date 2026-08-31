@@ -1,5 +1,3 @@
-import time
-
 from app.health import HealthRegistry
 
 
