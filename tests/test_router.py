@@ -1,4 +1,4 @@
-from app.config import ProviderConfig, RoutingRule, RouterConfig
+from app.config import ProviderConfig, RouterConfig, RoutingRule
 from app.health import HealthRegistry
 from app.router import Router
 
@@ -40,7 +40,6 @@ def test_auto_routes_code_tier():
 def test_cooling_provider_still_tried_last_not_dropped():
     r = make_router(cooling_down={"openrouter"})
     d = r.resolve("fix this bug in the function")
-    # cooling-down candidates are flagged but kept as desperate fallbacks
     assert d.candidates == ["openrouter/anthropic/claude-3.5-sonnet",
                             "openrouter/openai/gpt-4o-mini"]
     assert len(d.skipped) == 2
